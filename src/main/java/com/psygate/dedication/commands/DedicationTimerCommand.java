@@ -27,6 +27,7 @@ public class DedicationTimerCommand implements CommandExecutor {
         if (strings.length > 0 && !cs.hasPermission("dedication.admin.seeothers")) {
             cs.sendMessage(Dedication.PREFIX + ChatColor.RED + "You cannot see the dedication of others. This incident will be logged.");
             cs.sendMessage(Dedication.PREFIX + ChatColor.RED + "To see your own dedication, issue this command without arguments.");
+            Dedication.logger().severe(cs.getName() + " tried to see the dedication status of a different player, but lacks permission.");
             return true;
         } else {
             if (cs.hasPermission("dedication.admin.extensiveinfo")) {

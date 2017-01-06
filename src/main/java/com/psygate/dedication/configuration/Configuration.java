@@ -2,6 +2,9 @@ package com.psygate.dedication.configuration;
 
 import com.psygate.dedication.Dedication;
 import com.psygate.dedication.data.*;
+
+import net.minelink.ctplus.CombatTagPlus;
+
 import com.psygate.dedication.Helper;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +13,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import net.minelink.ctplus.CombatTagPlus;
 import org.bukkit.Material;
 
 /**
@@ -28,6 +30,7 @@ public class Configuration {
     private long strikeBackTime;
     private Set<Material> lockedBlocks = new HashSet<>();
     private Set<Target> targets = new HashSet();
+    private Set<UUID> defaultBypass = new HashSet<UUID>();
 
     public Configuration() {
         final Dedication plugin = Dedication.getPlugin(Dedication.class);
@@ -45,11 +48,26 @@ public class Configuration {
         } else {
             Dedication.logger().log(Level.INFO, "Using fall back timer. {0}ms.", strikeBackTime);
         }
-
+        
+        loadDefaultBypass(plugin);
+        Dedication.logger().log(Level.INFO, "Loaded default bypass: {0}", targets);
         loadTargets(plugin);
         Dedication.logger().log(Level.INFO, "Loaded targets: {0}", targets);
         loadLockedBlocks(plugin);
         Dedication.logger().log(Level.INFO, "Loaded locked blocks: {0}", lockedBlocks);
+    }
+    
+    private void loadDefaultBypass(Dedication plugin) {
+    	if (plugin.getConfig().contains("bypass")) {
+    		List<String> uuids = (List<String>) plugin.getConfig().getStringList("bypass");
+    		for (String uuid : uuids) {
+    			try {
+    				defaultBypass.add(UUID.fromString(uuid));
+    			} catch (IllegalArgumentException iae) {
+    				Dedication.logger().log(Level.INFO, "Failed to interpret bypass for {0}", uuid);
+    			}
+    		}
+    	}
     }
 
     private void loadTargets(Dedication plugin) {
@@ -131,6 +149,10 @@ public class Configuration {
 
     public PlayerData createPlayerData(UUID player) {
         PlayerData data = new PlayerData(player);
+        if (defaultBypass != null && defaultBypass.contains(player)) {
+        	data.setAdminOverride(true);
+        	Dedication.logger().log(Level.INFO, "As requested, exempting {0} by default", player);
+        }
         for (Target tgt : targets) {
             Target cp = tgt.copy();
             cp.setUUID(player);
@@ -188,10 +210,18 @@ public class Configuration {
     public void setLockedBlocks(Set<Material> lockedBlocks) {
         this.lockedBlocks = lockedBlocks;
     }
+    
+    public Set<UUID> getDefaultBypass() {
+    	return defaultBypass;
+    }
+    
+    public void setDefaultBypass(Set<UUID> defaultBypass) {
+    	this.defaultBypass = defaultBypass;
+    }
 
     @Override
     public String toString() {
-        return "Configuration{" + "safetyStorageIntervalTicks=" + safetyStorageIntervalTicks + ", backendType=" + backendType + ", fallBackStrikeBackTime=" + strikeBackTime + ", lockedBlocks=" + lockedBlocks + ", targets=" + targets + '}';
+        return "Configuration{" + "safetyStorageIntervalTicks=" + safetyStorageIntervalTicks + ", backendType=" + backendType + ", fallBackStrikeBackTime=" + strikeBackTime + ", lockedBlocks=" + lockedBlocks + ", targets=" + targets + ", bypass=" + defaultBypass + '}';
     }
 
     private void loadLockedBlocks(Dedication plugin) {

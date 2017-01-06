@@ -53,7 +53,7 @@ public class Dedication extends JavaPlugin {
         super.onEnable();
         instance = this;
         reloadConfiguration();
-        if (DEBUG == true) {
+        if (DEBUG) {
             debug();
         }
         switch (configuration.getBackendType()) {

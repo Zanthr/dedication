@@ -19,7 +19,6 @@ import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import com.psygate.dedication.Dedication;
-import vg.civcraft.mc.namelayer.group.GroupType;
 
 /**
  *
@@ -40,28 +39,24 @@ public class CitadelListener implements Listener {
         if (ev.getPlayer() == null) {
             return;
         }
-
-        if (Citadel.getReinforcementManager().isReinforced(ev.getBlock()) && !dedication.get(ev.getPlayer().getUniqueId()).isDedicated()) {
-            Reinforcement rf = Citadel.getReinforcementManager().getReinforcement(ev.getBlock());
-
-            if (rf instanceof PlayerReinforcement) {
-                PlayerReinforcement prf = (PlayerReinforcement) rf;
-                if (!canBreakCitadel(prf, ev.getPlayer())) {
-                    ev.setCancelled(true);
-                    Dedication.sendMessage(ev.getPlayer(), ChatColor.BOLD + "" + ChatColor.RED + Dedication.PREFIX + "You cannot break this reinforcement.");
+        Reinforcement reinf = ev.getReinforcement();
+        if (!(reinf instanceof PlayerReinforcement)) return;
+        PlayerReinforcement playerReinf = (PlayerReinforcement) reinf;
+        
+        UUID playerId = ev.getPlayer().getUniqueId();
+        
+        if (!dedication.get(playerId).isDedicated()) {
+        	if (!canBreakCitadel(playerReinf, ev.getPlayer())) {
+        		ev.setCancelled(true);
+                Dedication.sendMessage(ev.getPlayer(), ChatColor.BOLD + "" + ChatColor.RED + Dedication.PREFIX + "You cannot break this reinforcement.");
+        	}
+        } else {
+        	if (!playerReinf.canBypass(ev.getPlayer())) {
+                for (UUID uuid : playerReinf.getGroup().getAllMembers()) {
+                    pvp.putInCombat(ev.getPlayer(), uuid);
                 }
-            }
-        } else if (dedication.get(ev.getPlayer().getUniqueId()).isDedicated()) {
-            if (ev.getReinforcement() instanceof PlayerReinforcement && Citadel.getReinforcementManager().isReinforced(ev.getBlock())) {
-                PlayerReinforcement pr = (PlayerReinforcement) ev.getReinforcement();
-                if (!pr.isAccessible(ev.getPlayer()) || pr.getGroup().getType() == GroupType.PUBLIC) {
-                    for (UUID uuid : pr.getGroup().getAllMembers()) {
-                        pvp.putInCombat(ev.getPlayer(), uuid);
-                    }
-                }
-            }
+        	}
         }
-
     }
 
     @EventHandler
@@ -90,10 +85,10 @@ public class CitadelListener implements Listener {
     }
 
     private boolean canIgnoreCitadel(PlayerReinforcement prf, Player player) {
-        return prf.isAccessible(player);
+        return prf.canAccessChests(player);
     }
 
     private boolean canBreakCitadel(PlayerReinforcement prf, Player player) {
-        return prf.isAccessible(player) && prf.isBypassable(player);
+        return prf.canBypass(player);
     }
 }
