@@ -32,3 +32,5 @@ lockedBlocks:
     - Dropper
     - Trapped_Chest
     - Ender_Chest
+bypass:
+ - 23068d2b-9421-44a4-8db5-745ff921bad9
