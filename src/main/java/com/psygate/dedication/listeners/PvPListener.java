@@ -112,7 +112,7 @@ public class PvPListener implements Listener {
     }
 
     private void noEngageMsg(Player attacker, Player victim) {
-        Dedication.sendMessage(attacker, Dedication.PREFIX + ChatColor.RED + "You cannot attack " + victim.getName() + ".");
+        Dedication.sendMessage(attacker, Dedication.PREFIX + ChatColor.RED + "You cannot attack " + victim.getName() + "; check www.reddit.com/r/Devoted for more information.");
     }
 
     private void engageMsg(Player attacker, Player victim) {

@@ -48,15 +48,15 @@ public class CitadelListener implements Listener {
         if (!dedication.get(playerId).isDedicated()) {
         	if (!canBreakCitadel(playerReinf, ev.getPlayer())) {
         		ev.setCancelled(true);
-                Dedication.sendMessage(ev.getPlayer(), ChatColor.BOLD + "" + ChatColor.RED + Dedication.PREFIX + "You cannot break this reinforcement.");
+                Dedication.sendMessage(ev.getPlayer(), ChatColor.BOLD + "" + ChatColor.RED + Dedication.PREFIX + "You cannot break this reinforcement; check www.reddit.com/r/Devoted for more information.");
         	}
-        } else {
+        }/* else {
         	if (!playerReinf.canBypass(ev.getPlayer())) {
                 for (UUID uuid : playerReinf.getGroup().getAllMembers()) {
                     pvp.putInCombat(ev.getPlayer(), uuid);
                 }
         	}
-        }
+        }*/
     }
 
     @EventHandler
@@ -78,7 +78,7 @@ public class CitadelListener implements Listener {
                 PlayerReinforcement prf = (PlayerReinforcement) rf;
                 if (!canIgnoreCitadel(prf, ev.getPlayer())) {
                     ev.setCancelled(true);
-                    Dedication.sendMessage(ev.getPlayer(), ChatColor.BOLD + "" + ChatColor.RED + Dedication.PREFIX + "You cannot open this container.");
+                    Dedication.sendMessage(ev.getPlayer(), ChatColor.BOLD + "" + ChatColor.RED + Dedication.PREFIX + "You cannot open this container; check www.reddit.com/r/Devoted for more information.");
                 }
             }
         }

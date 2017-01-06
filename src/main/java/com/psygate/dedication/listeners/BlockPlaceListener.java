@@ -45,7 +45,7 @@ public class BlockPlaceListener implements Listener {
     public void bucketEmpty(PlayerBucketEmptyEvent ev) {
         if (!Dedication.initPlayer(ev.getPlayer().getUniqueId()).isDedicated()) {
             if (ev.getBucket() == Material.LAVA_BUCKET) {
-                Dedication.sendMessage(ev.getPlayer(), Dedication.PREFIX + ChatColor.RED + " You cannot use this.");
+                Dedication.sendMessage(ev.getPlayer(), Dedication.PREFIX + ChatColor.RED + " You cannot use this; check www.reddit.com/r/Devoted for more information.");
                 ev.setCancelled(true);
             }
         }
@@ -62,7 +62,7 @@ public class BlockPlaceListener implements Listener {
                 Block down = ev.getBlock().getRelative(BlockFace.DOWN);
                 if (down != null && down.getType() != Material.OBSIDIAN) {
                     if (ev.getPlayer() != null) {
-                        Dedication.sendMessage(ev.getPlayer(), Dedication.PREFIX + ChatColor.RED + " You cannot ignite this.");
+                        Dedication.sendMessage(ev.getPlayer(), Dedication.PREFIX + ChatColor.RED + " You cannot ignite this; check www.reddit.com/r/Devoted for more information.");
                     }
                     ev.setCancelled(true);
                 }
