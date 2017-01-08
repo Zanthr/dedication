@@ -65,7 +65,12 @@ public class FileBackend implements Backend {
             throw new IllegalArgumentException("Player does not exist.");
         }
         try (FileReader in = new FileReader(playerFile(uuid).toFile())) {
-            return gsonbuilder.create().fromJson(in, PlayerData.class);
+        	PlayerData player = gsonbuilder.create().fromJson(in, PlayerData.class);
+        	if (Dedication.getConfiguration().getDefaultBypass().contains(uuid)) {
+        		player.setAdminOverride(true);
+        		Dedication.logger().log(Level.INFO, "As requested, exempting {0} by default", player);
+        	}
+        	return player;
         } catch (IOException e) {
             Dedication.logger().log(Level.SEVERE, "Cannot load player data. (" + basefolder.toAbsolutePath() + ")", e);
             throw new RuntimeException(e);
