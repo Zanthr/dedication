@@ -120,7 +120,7 @@ public class PvPListener implements Listener {
     }
 
     private void process(EntityDamageByEntityEvent event, Player attacker, Player victim, boolean attackerdicated, boolean victimdedicated) {
-        if (attacker.getUniqueId().equals(victim.getUniqueId())) {
+        if (attacker != null && victim != null && attacker.getUniqueId().equals(victim.getUniqueId())) {
             return;
         }
         if (attackerdicated && !victimdedicated) {
