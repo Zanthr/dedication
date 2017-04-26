@@ -2,6 +2,7 @@ package com.psygate.dedication.listeners;
 
 import com.psygate.dedication.Dedication;
 import isaac.bastion.Bastion;
+import isaac.bastion.listeners.BastionDamageListener;
 import isaac.bastion.manager.BastionBlockManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -43,6 +44,9 @@ public class BastionListener implements Listener
 
         //See if there are any bastions covering this location that the player is not on the groups for
         Set blocking = bastionManager.shouldStopBlock(null, blocks, event.getPlayer().getUniqueId());
+        
+        //Clear out bastions that can only be directly destroyed
+        blocking = BastionDamageListener.clearNonBlocking(blocking);
 
         //We have already determined the player is not dedicated, so if there are blocking bastions
         //we cancel the event.
