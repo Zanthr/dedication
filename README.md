@@ -1,6 +1,11 @@
 # dedication
-CivEx Dedication Plugin
+Kit Awarding Plugin
 
-# Deprecated
+Fork of DevotedMC's version of the CivEx Dedication plugin.
 
-Development on this plugin has been halted in favor of a more user friendly and sophisticated system.
+Ideally, this plugin will award players with the permission
+    to summon certain item kits based on the player's 
+	completion of a cooresponding task. For instance, 
+	chopping down a certain amount of wood would allow a 
+	player to use a kit which gives them one or more stone
+	axes.
